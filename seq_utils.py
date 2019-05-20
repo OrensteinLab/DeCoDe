@@ -1,5 +1,13 @@
-import cvxpy
 import numpy as np
+import pickle
+
+with open('codons.txt', 'rb') as codon_file:
+    all_codons = pickle.load(codon_file)
+
+    
+with open('codon_aa_mapping.txt', 'rb') as codon_file:
+    codon_aa_mapping = pickle.load(codon_file)
+    
 
 def generate_seqs(count, length, dist=None):
     if dist is None:
@@ -37,83 +45,53 @@ def create_S(sequences):
     return (n_targets, n_var_pos, S)
 
 
-def retrieve_codons(all_codons, X):
-    keys = [all_codons[i] for i in np.argmax(X, axis=1)]
-    return keys
-
-
-def calc_num_seqs(codon_aa_mapping, keys):
-    return np.product([len(codon_aa_mapping[key]) for key in keys])
-
-
 def extract_solution(problem):
     final_objective = problem.value
     t, X, Z, B = problem.variables()
     return (t, X, Z, B)
+
+
+def retrieve_codons(X, codons=all_codons):
+    keys = [all_codons[i] for i in np.argmax(X.value, axis=1)]
+    return keys
+
+
+def calc_num_seqs(keys, codon_aa_mapping=codon_aa_mapping):
+    return np.product([len(codon_aa_mapping[key]) for key in keys])
+
+
+def calc_seq_prob(sequence, codon_keys, codon_aa_mapping=codon_aa_mapping):
+    p = 0
     
+    for i, aa in enumerate(sequence):
+        aa_dist = codon_aa_mapping[codon_keys[i]]
+        p_i = aa_dist[aa] / np.sum([aa_dist[key] for key in aa_dist])
+        if p_i == 0:
+            return p_i
+        
+        p += np.log(p_i)
+        
+    return np.exp(p)
+
+
+def calc_prob_on_target(target_seqs, codon_keys, codon_aa_mapping=codon_aa_mapping):
+    p_on_target = 0
     
-def solve_library(lib_lim, n_oligos, A=None, solver=, verbose=True, parallel=True):
-    #################
-    # i = n_targets #
-    # j = n_oligos  #
-    # k = n_var_pos #
-    # l = n_codons  #
-    # m = n_aas     #
-    #################
+    for seq in target_seqs:
+        p_on_target += calc_seq_prob(seq, codon_keys, codon_aa_mapping=codon_aa_mapping)
+        
+    return p_on_target
 
-    # A.shape = (n_codons, n_aas)
-    if A is None:
-        A = np.load('A.npy')
+
+def check_if_seqs_in_soln(sequences, codon_keys, codon_aa_mapping=codon_aa_mapping):
+    in_lib = []
     
-    # Extract number of codons and number of amino acid options
-    n_codons, n_aas = A.shape
-    
-    # Set up variables
-    t = cvxpy.Variable(n_targets, boolean=True)
-    X = {j: cvxpy.Variable((n_var_pos, n_codons), boolean=True) for j in range(n_oligos)}
-    Z = {j: cvxpy.Variable((n_var_pos, n_aas), boolean=True) for j in range(n_oligos)}
-    B = cvxpy.Variable((n_targets, n_oligos), boolean=True)
-
-    # Set up constraints
-    constraints = []
-
-    # Define relationship between Z, X, and A
-    for j in range(n_oligos):
-        constraints.append(Z[j] == X[j] * A)
-
-    # Constrain only one deg. codon can be used
-    for j in range(n_oligos):
-        for k in range(n_var_pos):
-            constraints.append(cvxpy.sum(X[j][k, :]) == 1)
-
-    # Constrain "and" for all positions (check for cover of target)
-    for i in range(n_targets):
-        for j in range(n_oligos):
-            expression = cvxpy.sum(cvxpy.multiply(S[i], Z[j])) - n_var_pos + n_var_pos * (1 - B[i, j])
-            constraints.append(expression >= 0)
-            constraints.append(expression <= n_var_pos)
-
-        # Constrain "or" for all oligos (check whether target is covered by at least one oligo)
-        expression =  - cvxpy.sum(B[i, :]) + (n_oligos + 1) * t[i]
-        constraints.append(expression >= 0)
-        constraints.append(expression <= n_oligos)
-
-    # Constrain library size
-    for j in range(n_oligos):
-        # Constrain library size
-        log_n_seq = cvxpy.sum(X[j] * cvxpy.log(cvxpy.sum(A, axis=1)))
-        constraints.append(log_n_seq <= cvxpy.log(lib_lim))
-
-    # Define the objective            
-    objective = cvxpy.sum(t)
-
-    # We tell cvxpy that we want to maximize sequence count 
-    # subject to constraints. All constraints in 
-    # cvxpy must be passed as a list.
-    problem = cvxpy.Problem(cvxpy.Maximize(objective), constraints)
-
-    # Solving the problem
-    problem.solve(solver=cvxpy.GUROBI, verbose=verbose, parallel=parallel)
-    
-    return problem
+    for seq in sequences:
+        p = calc_seq_prob(seq, codon_keys, codon_aa_mapping)
+        if p > 0:
+            in_lib.append(True)
+        else:
+            in_lib.append(False)
+            
+    return in_lib
     
