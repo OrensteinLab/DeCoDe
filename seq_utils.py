@@ -1,5 +1,10 @@
 import numpy as np
 import pickle
+from Bio import AlignIO as aln
+
+#################################################
+#### Datasets and  data generation functions ####
+#################################################
 
 with open('codons.txt', 'rb') as codon_file:
     all_codons = pickle.load(codon_file)
@@ -19,16 +24,52 @@ def generate_seqs(count, length, dist=None):
     wt = ''.join([i for i in np.random.choice(aa_choices, length)])
     seqs.append(wt)
     
-    for i in range(count - 1):
+    while len(seqs) < count:
         seq = np.random.choice(seqs)
         pos = np.random.choice(list(range(length)), p=dist)
         mutant = np.random.choice(aa_choices, 1)[0]
         seq_list = list(seq)
         seq_list[pos] = mutant
-        seqs.append(''.join(seq_list))
+        new_seq = ''.join(seq_list)
+        if new_seq not in seqs:
+            seqs.append(new_seq)
         
     return seqs
 
+
+def gen_fasta(sequences):
+    fasta = []
+    i=0
+    for seq in sequences:
+        fasta.append('>Seq{}'.format(i))
+        fasta.append(seq)
+        i+=1
+    fasta = '\n'.join(fasta)
+    
+    return fasta
+
+#############################################
+#### Input sequence processing functions ####
+#############################################
+
+def process_msa(filename, filetype):
+    with open(filename, 'r') as handle:
+        sequences = aln.read(handle, filetype)
+    
+    fixed_positions = {}
+    variable_positions = []
+
+    for position in range(len(sequences[0])):
+        residues = list(set([seq[position] for seq in sequences]))
+        if len(residues) == 1:
+            fixed_positions[position] = residues[0]
+        
+        else:
+            variable_positions.append(position)
+        
+    out_seqs = [''.join([seq[pos] for pos in variable_positions]) for seq in sequences]
+    
+    return (fixed_positions, variable_positions, out_seqs)
 
 def create_S(sequences):
     n_targets = len(sequences)
@@ -36,7 +77,7 @@ def create_S(sequences):
     
     S = {i: np.zeros((len(sequences[0]), 22)) for i in range(len(sequences))}
     
-    aa_idx = 'ACDEFGHIKLMNPQRSTVWY*_'
+    aa_idx = 'ACDEFGHIKLMNPQRSTVWY*-'
     for i in S.keys():
         seq = sequences[i]
         for j, aa in enumerate(seq):
@@ -44,34 +85,46 @@ def create_S(sequences):
             
     return (n_targets, n_var_pos, S)
 
+#######################################
+#### Solution extraction functions ####
+#######################################
 
-def extract_solution(problem):
-    final_objective = problem.value
-    t, X, Z, B = problem.variables()
-    return (t, X, Z, B)
-
-
-def retrieve_codons(X, codons=all_codons):
-    keys = [all_codons[i] for i in np.argmax(X.value, axis=1)]
+def retrieve_codons(codon_selection, codons=all_codons):
+    keys = [[all_codons[i] for i in np.argmax(codon_selection, axis=2)[j]] for j in range(len(codon_selection))]
     return keys
 
 
 def calc_num_seqs(keys, codon_aa_mapping=codon_aa_mapping):
-    return np.product([len(codon_aa_mapping[key]) for key in keys])
+    oligo_products = []
+    
+    for key_set in keys:
+        oligo_products.append(np.product([len(codon_aa_mapping[key]) for key in key_set]))
+    
+    return np.sum(oligo_products)
 
 
 def calc_seq_prob(sequence, codon_keys, codon_aa_mapping=codon_aa_mapping):
-    p = 0
+
+    in_sl = []
+    total_seqs = []
     
-    for i, aa in enumerate(sequence):
-        aa_dist = codon_aa_mapping[codon_keys[i]]
-        p_i = aa_dist[aa] / np.sum([aa_dist[key] for key in aa_dist])
-        if p_i == 0:
-            return p_i
+    for key_set in codon_keys:
         
-        p += np.log(p_i)
+        seq_total = 1
+        p_i = 1
         
-    return np.exp(p)
+        for i, aa in enumerate(sequence):
+            aa_dist = codon_aa_mapping[key_set[i]]
+            
+            total_aa_count = np.sum([aa_dist[key] for key in aa_dist])
+            
+            seq_total *= total_aa_count
+            p_i *= aa_dist[aa]
+            
+        in_sl.append(p_i)
+        total_seqs.append(seq_total)
+        
+    return np.sum(in_sl) / np.sum(total_seqs)
 
 
 def calc_prob_on_target(target_seqs, codon_keys, codon_aa_mapping=codon_aa_mapping):
@@ -94,4 +147,31 @@ def check_if_seqs_in_soln(sequences, codon_keys, codon_aa_mapping=codon_aa_mappi
             in_lib.append(False)
             
     return in_lib
+    
+    
+def parse_lib(fixed_positions, codon_keys):
+    parsed_lib = []
+    
+    for i, key_set in enumerate(codon_keys):
+        
+        parsed_sublib = []
+        
+        for j in range(len(key_set)):
+            
+            if j in fixed_positions:
+
+                parsed_sublib.append(fixed_positions[j])
+                
+            else:
+                aa_dist = codon_aa_mapping[key_set[j]]
+                
+                if np.sum([aa_dist[key] for key in aa_dist]) == 1:
+                    parsed_sublib.append(max(aa_dist))
+                    
+                else:
+                    parsed_sublib.append(key_set[j])
+                    
+        parsed_lib.append(parsed_sublib)
+    
+    return parsed_lib
     
