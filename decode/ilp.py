@@ -1,5 +1,6 @@
 import cvxpy
 import numpy as np
+from datasets import D, D_hat
 
 def solve_library(O, lib_lim, n_templates, bins=1e3, verbose=True, parallel=True,
                   approximate=False, time_limit=0, threads=0):
@@ -9,10 +10,6 @@ def solve_library(O, lib_lim, n_templates, bins=1e3, verbose=True, parallel=True
     # p = n_var_pos    #
     # a = n_aas        #
     ####################
-
-    # D.shape = (n_codons, n_aas)
-    D = np.load('D.npy')
-    D_hat = np.load('D_hat.npy')
     
     # Extract number of codons and number of amino acid options
     n_codons, n_aas = D.shape
