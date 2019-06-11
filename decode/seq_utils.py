@@ -6,11 +6,11 @@ from Bio import AlignIO as aln
 #### Datasets and  data generation functions ####
 #################################################
 
-with open('codons.txt', 'rb') as codon_file:
+with open('codons.pickle', 'rb') as codon_file:
     all_codons = pickle.load(codon_file)
 
     
-with open('codon_aa_mapping.txt', 'rb') as codon_file:
+with open('codon_aa_mapping.pickle', 'rb') as codon_file:
     codon_aa_mapping = pickle.load(codon_file)
     
 
@@ -71,19 +71,19 @@ def process_msa(filename, filetype):
     
     return (fixed_positions, variable_positions, out_seqs)
 
-def create_S(sequences):
+def create_O(sequences):
     n_targets = len(sequences)
     n_var_pos = len(sequences[0])
     
-    S = {i: np.zeros((len(sequences[0]), 22)) for i in range(len(sequences))}
+    O = {i: np.zeros((len(sequences[0]), 22)) for i in range(len(sequences))}
     
     aa_idx = 'ACDEFGHIKLMNPQRSTVWY*-'
-    for i in S.keys():
+    for i in O.keys():
         seq = sequences[i]
         for j, aa in enumerate(seq):
-            S[i][j, aa_idx.index(aa)] = 1
+            O[i][j, aa_idx.index(aa)] = 1
             
-    return (n_targets, n_var_pos, S)
+    return (n_targets, n_var_pos, O)
 
 #######################################
 #### Solution extraction functions ####
@@ -98,7 +98,7 @@ def calc_num_seqs(keys, codon_aa_mapping=codon_aa_mapping):
     oligo_products = []
     
     for key_set in keys:
-        oligo_products.append(np.product([len(codon_aa_mapping[key]) for key in key_set]))
+        oligo_products.append(np.product([len(codon_aa_mapping[key[0]]) for key in key_set]))
     
     return np.sum(oligo_products)
 
@@ -114,7 +114,7 @@ def calc_seq_prob(sequence, codon_keys, codon_aa_mapping=codon_aa_mapping):
         p_i = 1
         
         for i, aa in enumerate(sequence):
-            aa_dist = codon_aa_mapping[key_set[i]]
+            aa_dist = codon_aa_mapping[key_set[i][0]]
             
             total_aa_count = np.sum([aa_dist[key] for key in aa_dist])
             
@@ -149,27 +149,35 @@ def check_if_seqs_in_soln(sequences, codon_keys, codon_aa_mapping=codon_aa_mappi
     return in_lib
     
     
-def parse_lib(fixed_positions, codon_keys):
+def parse_lib(seq_length, fixed_positions, codon_keys):
+    
     parsed_lib = []
     
     for i, key_set in enumerate(codon_keys):
         
         parsed_sublib = []
         
-        for j in range(len(key_set)):
+        k = 0
+        
+        for j in range(seq_length):
             
             if j in fixed_positions:
-
-                parsed_sublib.append(fixed_positions[j])
+                
+                res = fixed_positions[j]
                 
             else:
-                aa_dist = codon_aa_mapping[key_set[j]]
+                aa_dist = codon_aa_mapping[key_set[k][0]]
                 
                 if np.sum([aa_dist[key] for key in aa_dist]) == 1:
-                    parsed_sublib.append(max(aa_dist))
+                    res = max(aa_dist)
                     
                 else:
-                    parsed_sublib.append(key_set[j])
+                    res = {'/'.join(aa_dist.keys()): key_set[k]}
+                    
+                k += 1
+                    
+            if res != '-':
+                    parsed_sublib.append(res)
                     
         parsed_lib.append(parsed_sublib)
     
