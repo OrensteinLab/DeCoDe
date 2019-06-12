@@ -55,19 +55,19 @@ if __name__ == '__main__':
             fps[protein]['mutations'] = mutations
             
     # Write out the sequence datasets
-    with open('gfp.fa', 'w') as handle:
+    with open('../examples/gfp/gfp.fa', 'w') as handle:
     for fp in fps:
         handle.write('>{}\n'.format(fp))
         handle.write('{}\n'.format(fps[fp]['sequence']))
         
-    with open('gfp_exclude_long.fa', 'w') as handle:
+    with open('../examples/gfp/gfp_exclude_long.fa', 'w') as handle:
         for fp in fps:
             seq = fps[fp]['sequence']
             if len(seq) in [238, 239]:
                 handle.write('>{}\n'.format(fp))
                 handle.write('{}\n'.format(seq))
             
-    with open('gfp_239.fa', 'w') as handle:
+    with open('../examples/gfp/gfp_239.fa', 'w') as handle:
         for fp in fps:
             seq = fps[fp]['sequence']
             if len(seq) == 239:
@@ -75,5 +75,5 @@ if __name__ == '__main__':
                 handle.write('{}\n'.format(seq))
         
     # Write all of the data out to a JSON file
-    with open('gfp.json', 'w') as handle:
+    with open('../aux_data/gfp.json', 'w') as handle:
         json.dump(fps, handle)
