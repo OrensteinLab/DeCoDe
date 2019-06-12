@@ -1,7 +1,7 @@
 import click
 import numpy as np
-from ilp import solve_library
-from seq_utils import *
+from decode.ilp import solve_library
+from decode.seq_utils import *
 import time
 import json
 
@@ -73,12 +73,19 @@ def optimize_lib(alignment_file, output_file, limit, sublib, bins, time_limit, t
     # Parse the library
     total_seq_length = len(fixed_positions) + len(variable_positions)
     parsed_lib = parse_lib(total_seq_length, fixed_positions, codons)
-    
+
     if not quiet:
         click.echo('Writing output...')
-    
+
+    if solution['problem'].status == 'optimal':
+        solution_optimal = True
+
+    elif solution['problem'].status == 'optimal_inaccurate':
+        solution_optimal = False
+
     # Generate and write the output
     data = {
+        'solution_optimal': solution_optimal,
         'fixed_positions': fixed_positions,
         'variable_positions': variable_positions,
         'sequences': sequences,
