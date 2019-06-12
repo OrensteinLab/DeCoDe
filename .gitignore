@@ -1,0 +1,11 @@
+# pycache
+__pycache__
+
+# Gurobi log file
+gurobi.log
+
+# Notebooks (only used for prototyping)
+*.ipynb
+
+# Notebook checkpoints
+.ipynb_checkpoints
