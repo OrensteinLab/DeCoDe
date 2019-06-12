@@ -1,19 +1,11 @@
 import numpy as np
 import pickle
 from Bio import AlignIO as aln
-from datasets import all_codons, codon_aa_mapping
+from .datasets import all_codons, codon_aa_mapping
 
 #################################################
 #### Datasets and  data generation functions ####
 #################################################
-
-with open('data/codons.pickle', 'rb') as codon_file:
-    all_codons = pickle.load(codon_file)
-
-    
-with open('data/codon_aa_mapping.pickle', 'rb') as codon_file:
-    codon_aa_mapping = pickle.load(codon_file)
-    
 
 def generate_seqs(count, length, dist=None):
     if dist is None:

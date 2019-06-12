@@ -1,6 +1,6 @@
 import cvxpy
 import numpy as np
-from datasets import D, D_hat
+from .datasets import D, D_hat
 
 def solve_library(O, lib_lim, n_templates, bins=1e3, verbose=True, parallel=True,
                   approximate=False, time_limit=0, threads=0):
@@ -70,7 +70,7 @@ def solve_library(O, lib_lim, n_templates, bins=1e3, verbose=True, parallel=True
     if time_limit > 0:
         aux_params['TimeLimit'] = time_limit
         
-    if time_limit > 0:
+    if threads > 0:
         aux_params['Threads'] = threads
 
     # Solving the problem
