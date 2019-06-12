@@ -9,3 +9,7 @@ gurobi.log
 
 # Notebook checkpoints
 .ipynb_checkpoints
+
+#Virtual environment
+.venv
+
