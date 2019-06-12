@@ -1,0 +1,3 @@
+[submodule "cvxpy"]
+	path = cvxpy
+	url = https://github.com/TShimko126/cvxpy.git
