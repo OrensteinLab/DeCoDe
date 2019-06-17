@@ -4,6 +4,9 @@ __pycache__
 # Gurobi log file
 gurobi.log
 
+# Geckodriver log
+geckodriver.log
+
 # Notebooks (only used for prototyping)
 *.ipynb
 
