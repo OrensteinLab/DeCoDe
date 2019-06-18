@@ -1,0 +1,92 @@
+Reading MSA file...
+Removing fixed positions...
+
+Library size limit:		10000000
+Sublibrary count limit:		1
+Number of targets:		94
+Number of variable positions:	73
+
+Using exact library size.
+
+Academic license - for non-commercial use only
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter QCPDual to 1
+   Prev: 0  Min: 0  Max: 1  Default: 0
+Changed value of parameter TimeLimit to 172800.0
+   Prev: 1e+100  Min: 0.0  Max: 1e+100  Default: 1e+100
+Changed value of parameter Threads to 12
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Optimize a model with 450 rows, 61581 columns and 3541410 nonzeros
+Variable types: 0 continuous, 61581 integer (61581 binary)
+Coefficient statistics:
+  Matrix range     [7e-01, 7e+01]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+01]
+Found heuristic solution: objective 0.0000000
+Sparsify removed 24429 nonzeros (85%)
+Presolve removed 282 rows and 60892 columns
+Presolve time: 4.55s
+Presolved: 168 rows, 689 columns, 4298 nonzeros
+Variable types: 37 continuous, 652 integer (641 binary)
+
+Root relaxation: objective -9.011898e+01, 411 iterations, 0.01 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0  -90.11898    0   81    0.00000  -90.11898      -     -    4s
+     0     0  -79.89541    0  124    0.00000  -79.89541      -     -    4s
+H    0     0                     -10.0000000  -79.89541   699%     -    4s
+     0     0  -75.18296    0  120  -10.00000  -75.18296   652%     -    4s
+     0     0  -73.94950    0  123  -10.00000  -73.94950   639%     -    4s
+     0     0  -73.09377    0  125  -10.00000  -73.09377   631%     -    4s
+     0     0  -72.67640    0  125  -10.00000  -72.67640   627%     -    4s
+     0     0  -72.63155    0  133  -10.00000  -72.63155   626%     -    4s
+     0     0  -72.27359    0  129  -10.00000  -72.27359   623%     -    4s
+     0     0  -72.26990    0  132  -10.00000  -72.26990   623%     -    4s
+H    0     0                     -11.0000000  -72.26990   557%     -    4s
+H    0     0                     -13.0000000  -72.26990   456%     -    4s
+     0     0  -69.88971    0  142  -13.00000  -69.88971   438%     -    4s
+H    0     0                     -15.0000000  -69.88971   366%     -    5s
+     0     0  -69.11439    0  150  -15.00000  -69.11439   361%     -    5s
+     0     0  -68.01676    0  154  -15.00000  -68.01676   353%     -    5s
+H    0     0                     -20.0000000  -68.01676   240%     -    5s
+H    0     0                     -21.0000000  -68.01676   224%     -    5s
+     0     0  -67.44131    0  168  -21.00000  -67.44131   221%     -    5s
+H    0     0                     -24.0000000  -67.44131   181%     -    5s
+     0     0  -67.44131    0  168  -24.00000  -67.44131   181%     -    5s
+     0     2  -67.44131    0  168  -24.00000  -67.44131   181%     -    5s
+H   64    50                     -25.0000000  -65.22911   161%  26.9    6s
+H   68    54                     -27.0000000  -65.22911   142%  25.9    6s
+  1903  1338  -52.11170   18  210  -27.00000  -60.88479   125%   7.9   10s
+H 1966  1298                     -32.0000037  -57.87800  80.9%  11.4   12s
+  2958  1377  -47.47168   20   63  -32.00000  -53.76784  68.0%  15.6   15s
+  6889  1956  -40.30366   20   57  -32.00000  -45.56167  42.4%  16.3   20s
+ 18161  4359  -34.66394   27   66  -32.00000  -40.11959  25.4%  15.6   25s
+ 33512  4251     cutoff   31       -32.00000  -36.80292  15.0%  15.0   30s
+
+Cutting planes:
+  Gomory: 45
+  Cover: 6
+  MIR: 126
+  StrongCG: 3
+  Flow cover: 125
+  GUB cover: 53
+  Inf proof: 86
+  Zero half: 5
+
+Explored 44474 nodes (666677 simplex iterations) in 34.05 seconds
+Thread count was 12 (of 40 available processors)
+
+Solution count 10: -32 -27 -25 ... -10
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -3.200000000000e+01, best bound -3.200000000000e+01, gap 0.0000%
+
+Number of covered targets:	32
+Total library size:		8257536
+Probability on target:		0.00000
+
+Writing output...

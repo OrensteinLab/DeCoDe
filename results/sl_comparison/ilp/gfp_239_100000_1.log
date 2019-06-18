@@ -1,0 +1,95 @@
+Reading MSA file...
+Removing fixed positions...
+
+Library size limit:		100000
+Sublibrary count limit:		1
+Number of targets:		94
+Number of variable positions:	73
+
+Using exact library size.
+
+Academic license - for non-commercial use only
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter QCPDual to 1
+   Prev: 0  Min: 0  Max: 1  Default: 0
+Changed value of parameter TimeLimit to 172800.0
+   Prev: 1e+100  Min: 0.0  Max: 1e+100  Default: 1e+100
+Changed value of parameter Threads to 12
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Optimize a model with 450 rows, 61581 columns and 3541410 nonzeros
+Variable types: 0 continuous, 61581 integer (61581 binary)
+Coefficient statistics:
+  Matrix range     [7e-01, 7e+01]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+01]
+Found heuristic solution: objective 0.0000000
+Sparsify removed 24429 nonzeros (85%)
+Presolve removed 282 rows and 60892 columns
+Presolve time: 4.36s
+Presolved: 168 rows, 689 columns, 4298 nonzeros
+Variable types: 37 continuous, 652 integer (641 binary)
+
+Root relaxation: objective -8.884595e+01, 406 iterations, 0.01 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0  -88.84595    0   89    0.00000  -88.84595      -     -    4s
+     0     0  -81.20289    0  116    0.00000  -81.20289      -     -    4s
+     0     0  -78.34816    0  116    0.00000  -78.34816      -     -    4s
+     0     0  -77.07048    0  116    0.00000  -77.07048      -     -    4s
+     0     0  -77.02186    0  121    0.00000  -77.02186      -     -    4s
+     0     0  -77.02175    0  122    0.00000  -77.02175      -     -    4s
+H    0     0                      -4.0000000  -77.02175  1826%     -    4s
+     0     0  -72.02257    0  121   -4.00000  -72.02257  1701%     -    4s
+H    0     0                     -11.0000000  -72.02257   555%     -    4s
+     0     0  -71.82709    0  126  -11.00000  -71.82709   553%     -    4s
+     0     0  -71.77604    0  126  -11.00000  -71.77604   553%     -    4s
+     0     0  -71.76747    0  127  -11.00000  -71.76747   552%     -    4s
+     0     0  -70.79576    0  142  -11.00000  -70.79576   544%     -    4s
+H    0     0                     -16.0000000  -70.79576   342%     -    4s
+     0     0  -70.75889    0  142  -16.00000  -70.75889   342%     -    4s
+     0     0  -70.08284    0  154  -16.00000  -70.08284   338%     -    4s
+     0     0  -70.07944    0  155  -16.00000  -70.07944   338%     -    4s
+H    0     0                     -17.0000000  -70.07944   312%     -    4s
+     0     0  -69.09807    0  151  -17.00000  -69.09807   306%     -    4s
+     0     0  -69.03966    0  154  -17.00000  -69.03966   306%     -    4s
+H    0     0                     -18.0000000  -69.03966   284%     -    5s
+     0     0  -68.47908    0  159  -18.00000  -68.47908   280%     -    5s
+     0     0  -68.47908    0  159  -18.00000  -68.47908   280%     -    5s
+     0     2  -68.47908    0  159  -18.00000  -68.47908   280%     -    5s
+H   92    58                     -20.0000000  -65.84461   229%  24.7    5s
+  2048  1341  -53.39481   18  175  -20.00000  -54.12402   171%  11.3   11s
+ 11792  5667  -22.47203   51   22  -20.00000  -43.58830   118%   9.5   15s
+ 29632 12825  -22.56275   53   53  -20.00000  -36.98080  84.9%   9.2   20s
+ 49332 17249 infeasible   30       -20.00000  -32.38103  61.9%  10.1   25s
+ 71777 18866  -24.46982   46   35  -20.00000  -28.96060  44.8%  11.0   30s
+ 90099 17572 infeasible   43       -20.00000  -26.96121  34.8%  11.4   35s
+ 107319 15140  -25.73373   37   25  -20.00000  -25.73373  28.7%  11.6   40s
+*110691 13892              62     -21.0000000  -25.49726  21.4%  11.7   41s
+ 118741 10579  -24.80742   49   28  -21.00000  -24.82312  18.2%  11.8   45s
+
+Cutting planes:
+  Gomory: 73
+  Cover: 3
+  Clique: 1
+  MIR: 99
+  Flow cover: 142
+  GUB cover: 53
+  Inf proof: 232
+
+Explored 134889 nodes (1630340 simplex iterations) in 49.87 seconds
+Thread count was 12 (of 40 available processors)
+
+Solution count 8: -21 -20 -18 ... 0
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -2.100000000000e+01, best bound -2.100000000000e+01, gap 0.0000%
+
+Number of covered targets:	21
+Total library size:		86016
+Probability on target:		0.00021
+
+Writing output...

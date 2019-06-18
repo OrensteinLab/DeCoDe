@@ -1,0 +1,110 @@
+Reading MSA file...
+Removing fixed positions...
+
+Library size limit:		1000000
+Sublibrary count limit:		1
+Number of targets:		94
+Number of variable positions:	73
+
+Using exact library size.
+
+Academic license - for non-commercial use only
+Parameter OutputFlag unchanged
+   Value: 1  Min: 0  Max: 1  Default: 1
+Changed value of parameter QCPDual to 1
+   Prev: 0  Min: 0  Max: 1  Default: 0
+Changed value of parameter TimeLimit to 172800.0
+   Prev: 1e+100  Min: 0.0  Max: 1e+100  Default: 1e+100
+Changed value of parameter Threads to 12
+   Prev: 0  Min: 0  Max: 1024  Default: 0
+Optimize a model with 450 rows, 61581 columns and 3541410 nonzeros
+Variable types: 0 continuous, 61581 integer (61581 binary)
+Coefficient statistics:
+  Matrix range     [7e-01, 7e+01]
+  Objective range  [1e+00, 1e+00]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+01]
+Found heuristic solution: objective 0.0000000
+Sparsify removed 24429 nonzeros (85%)
+Presolve removed 282 rows and 60892 columns
+Presolve time: 3.86s
+Presolved: 168 rows, 689 columns, 4298 nonzeros
+Variable types: 37 continuous, 652 integer (641 binary)
+
+Root relaxation: objective -8.954758e+01, 415 iterations, 0.01 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0  -89.54758    0   86    0.00000  -89.54758      -     -    3s
+     0     0  -82.24436    0  121    0.00000  -82.24436      -     -    4s
+     0     0  -80.09267    0  118    0.00000  -80.09267      -     -    4s
+     0     0  -79.55268    0  117    0.00000  -79.55268      -     -    4s
+H    0     0                      -5.0000000  -79.55268  1491%     -    4s
+     0     0  -79.35146    0  118   -5.00000  -79.35146  1487%     -    4s
+     0     0  -79.35140    0  120   -5.00000  -79.35140  1487%     -    4s
+     0     0  -75.43366    0  122   -5.00000  -75.43366  1409%     -    4s
+     0     0  -75.25685    0  128   -5.00000  -75.25685  1405%     -    4s
+     0     0  -75.18135    0  129   -5.00000  -75.18135  1404%     -    4s
+H    0     0                     -10.0000000  -75.18135   652%     -    4s
+     0     0  -75.16965    0  128  -10.00000  -75.16965   652%     -    4s
+     0     0  -74.28762    0  140  -10.00000  -74.28762   643%     -    4s
+     0     0  -74.04619    0  135  -10.00000  -74.04619   640%     -    4s
+     0     0  -73.94618    0  140  -10.00000  -73.94618   639%     -    4s
+     0     0  -73.90740    0  141  -10.00000  -73.90740   639%     -    4s
+     0     0  -72.59802    0  151  -10.00000  -72.59802   626%     -    4s
+     0     0  -72.57954    0  149  -10.00000  -72.57954   626%     -    4s
+     0     0  -72.03938    0  154  -10.00000  -72.03938   620%     -    4s
+     0     0  -72.03938    0  154  -10.00000  -72.03938   620%     -    4s
+     0     2  -72.03938    0  154  -10.00000  -72.03938   620%     -    4s
+H   70    49                     -11.0000000  -69.02073   527%  30.3    4s
+H   82    63                     -12.0000000  -69.02073   475%  27.3    4s
+H   84    65                     -22.0000000  -69.02073   214%  26.8    4s
+   477   297  -49.80720   38   99  -22.00000  -69.02073   214%  10.5    5s
+* 1231   767              76     -24.0000000  -68.07709   184%   8.7    5s
+H 2090  1307                     -25.0000000  -60.08255   140%  10.3    8s
+  8061  4096  -34.65429   43   49  -25.00000  -53.00128   112%   9.3   10s
+H 9381  4892                     -26.0000000  -52.24715   101%   9.1   11s
+ 23830 13256     cutoff   44       -26.00000  -48.11555  85.1%   9.1   15s
+ 35349 19366 infeasible   30       -26.00000  -45.97274  76.8%   9.3   21s
+ 35948 19690  -41.86592   27  143  -26.00000  -45.91134  76.6%   9.4   25s
+ 35981 19712  -35.04891   38  230  -26.00000  -45.91134  76.6%   9.4   30s
+ 36000 19725  -35.19215   43  239  -26.00000  -45.91134  76.6%   9.4   35s
+ 36016 19735  -34.74299   47  253  -26.00000  -45.91134  76.6%   9.4   40s
+ 36036 19749  -36.39343   30  258  -26.00000  -45.91134  76.6%   9.3   45s
+ 36049 19757  -42.24031   32  268  -26.00000  -45.91134  76.6%   9.3   51s
+ 36064 19767  -36.25719   39  254  -26.00000  -45.91134  76.6%   9.3   55s
+ 36083 19780  -32.61029   45  267  -26.00000  -45.91134  76.6%   9.3   60s
+ 36103 19793  -31.97943   55  263  -26.00000  -45.91134  76.6%   9.3   65s
+ 36120 19805  -34.75549   36  248  -26.00000  -45.91134  76.6%   9.3   70s
+ 36138 19817  -41.90612   35  270  -26.00000  -45.91134  76.6%   9.3   75s
+ 36148 19823  -41.86592   27  251  -26.00000  -45.91134  76.6%   9.3   80s
+ 36154 19830  -45.91134   22  199  -26.00000  -45.91134  76.6%   9.6   85s
+ 44825 21660  -37.40632   35   41  -26.00000  -41.78161  60.7%   9.7   90s
+ 70670 22577     cutoff   49       -26.00000  -36.98399  42.2%   9.7   95s
+ 93879 18705     cutoff   46       -26.00000  -34.57458  33.0%  10.0  100s
+ 111255 17242     cutoff   51       -26.00000  -32.96812  26.8%  10.5  105s
+ 125634 13477 infeasible   42       -26.00000  -31.50893  21.2%  10.9  110s
+ 140303  5765     cutoff   52       -26.00000  -29.78927  14.6%  11.5  115s
+
+Cutting planes:
+  Gomory: 60
+  MIR: 40
+  Flow cover: 79
+  GUB cover: 65
+  Inf proof: 100
+  Zero half: 17
+
+Explored 147920 nodes (1723517 simplex iterations) in 117.60 seconds
+Thread count was 12 (of 40 available processors)
+
+Solution count 9: -26 -25 -24 ... 0
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -2.600000000000e+01, best bound -2.600000000000e+01, gap 0.0000%
+
+Number of covered targets:	26
+Total library size:		884736
+Probability on target:		0.00003
+
+Writing output...
