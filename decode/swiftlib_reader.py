@@ -1,7 +1,9 @@
+import itertools
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
 import pandas as pd
+import time
 
 def run_swift_lib(input_string, input_type, lib_size_limit, oligo_limit):
     # Setup selenium 
@@ -17,7 +19,6 @@ def run_swift_lib(input_string, input_type, lib_size_limit, oligo_limit):
     csv_tab = driver.find_element_by_id('ui-id-2')
     fasta_tab = driver.find_element_by_id('ui-id-3')
     
-
     # Get the buttons/clickable elements for fasta input
     fasta_input = driver.find_element_by_id('fasta')
     fasta_update_table_button = driver.find_element_by_id('table_from_fasta')
@@ -65,6 +66,13 @@ def run_swift_lib(input_string, input_type, lib_size_limit, oligo_limit):
     
     # Run SwiftLib
     launch_button.click()
+    
+#     driver.save_screenshot('test.png')
+    time.sleep(20)
+#     try:
+#         table_output = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.ID, 'scrollhere')))
+#     finally:
+#         driver.quit()
 
     # Get the table
     table_output = driver.find_element_by_id('scrollhere')
@@ -73,5 +81,12 @@ def run_swift_lib(input_string, input_type, lib_size_limit, oligo_limit):
     # Read the table
     swift_lib_codon_table = pd.read_html(html_out)[0]
     
-    return swift_lib_codon_table
-
+    swift_lib_codons = [codon.split(', ') for codon in list(swift_lib_codon_table[2][1:])]
+    
+    sublibs = [list(i) for i in itertools.product(*swift_lib_codons)]
+    
+    sublibs = [[[i] for i in key] for key in sublibs]
+    
+    driver.quit()
+    
+    return sublibs
