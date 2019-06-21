@@ -1,4 +1,4 @@
-# DeCoDe: degenerate codon design for complete protein-codingDNA libraries
+# DeCoDe: degenerate codon design for complete protein-coding DNA libraries
 
 ## Requirements
 
@@ -14,4 +14,12 @@ We can use [GNU `parallel`](https://www.gnu.org/software/parallel/) to design se
 
 ```
 parallel --will-cite --lb -j 3 "/usr/bin/time -v --output results/multi_sublib/gfp_exclude_long_10000000_{1}.time python decode.py --limit 10000000 --sublib {1} --bins 100 --time-limit 172800 --threads 12 examples/gfp/gfp_exclude_long.aln results/multi_sublib/gfp_exclude_long_10000000_{1}.json | tee results/multi_sublib/gfp_exclude_long_10000000_{1}.log" ::: 1 2 3 4 8 12
+```
+
+```
+parallel --will-cite --lb -j 3 "/usr/bin/time -v --output results/sl_comparison/ilp/gfp_239_{1}_{2}.time python decode.py --limit {1} --sublib {2} --bins 100 --time-limit 172800 --threads 12 examples/gfp/gfp_239.aln results/sl_comparison/ilp/gfp_239_{1}_{2}.json | tee results/sl_comparison/ilp/gfp_239_{1}_{2}.log" ::: 100000 1000000 10000000 100000000 1000000000 ::: 1 2
+```
+
+```
+parallel --will-cite --lb "/usr/bin/time -v --output results/sl_comparison/sl/gfp_239_{1}_{2}.time python run_SwiftLib.py --limit {1} --sublib {2}" ::: 100000 1000000 10000000 100000000 1000000000 ::: 1 2
 ```
