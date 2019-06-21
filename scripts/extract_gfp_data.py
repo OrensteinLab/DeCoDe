@@ -56,9 +56,9 @@ if __name__ == '__main__':
             
     # Write out the sequence datasets
     with open('../examples/gfp/gfp.fa', 'w') as handle:
-    for fp in fps:
-        handle.write('>{}\n'.format(fp))
-        handle.write('{}\n'.format(fps[fp]['sequence']))
+        for fp in fps:
+            handle.write('>{}\n'.format(fp))
+            handle.write('{}\n'.format(fps[fp]['sequence']))
         
     with open('../examples/gfp/gfp_exclude_long.fa', 'w') as handle:
         for fp in fps:
