@@ -48,6 +48,7 @@ log_data <- fread('../../results/multi_sublib/log.csv')
 # Coverage
 ggplot(data) +
   geom_bar(aes(x=sublibs, y=n_covered), stat='identity') +
+  geom_hline(yintercept=131, color='darkgreen', linetype=2, lwd=1) +
   labs(x='Number of sublibraries',
        y='Number of target sequences covered') +
   presentation
@@ -61,6 +62,7 @@ ggplot(data) +
   geom_bar(aes(x=sublibs, y=total_lib_size), stat='identity') +
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                 labels = trans_format("log10", math_format(10^.x))) +
+  geom_hline(yintercept=10^7, color='red', linetype=2, lwd=1) +
   labs(x='Number of sublibraries',
        y='Total library size') +
   presentation
@@ -74,6 +76,7 @@ ggplot(data) +
   geom_bar(aes(x=sublibs, y=time), stat='identity') +
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                 labels = trans_format("log10", math_format(10^.x))) +
+  geom_hline(yintercept=172800, color='red', linetype=2, lwd=1) +
   labs(x='Number of sublibraries',
        y='Runtime (s)') +
   presentation
@@ -104,11 +107,12 @@ ggplot(log_data_reformed) +
   facet_wrap(.~sublibs, nrow=2, scales='free_x') +
   scale_color_brewer(palette = "Set1") +
   labs(x='Time (m)',
-       y='Value',
-       color='Variable') +
+       y='ILP solution size',
+       color='Solution\nelement') +
   presentation +
   theme(axis.text.x = element_text(angle = -90, hjust=0, vjust=0.5))
 
 ggsave('Fig_3_SI_5.png', plot = last_plot(), device = 'png',
        scale = 1, width = 160, height = 100, units = 'mm',
        dpi = 300)
+
