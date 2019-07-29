@@ -66,9 +66,6 @@ def run_swift_lib(input_string, input_type, lib_size_limit, oligo_limit):
     
     # Run SwiftLib
     launch_button.click()
-    
-#     driver.save_screenshot('test.png')
-#     time.sleep(20)
 
     table_output = None
     
@@ -77,11 +74,6 @@ def run_swift_lib(input_string, input_type, lib_size_limit, oligo_limit):
             table_output = driver.find_element_by_id('scrollhere')
         except:
             continue
-    
-#     try:
-#         table_output = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.ID, 'scrollhere')))
-#     finally:
-#         driver.quit()
 
     # Get the table
     table_output = driver.find_element_by_id('scrollhere')
