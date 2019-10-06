@@ -48,6 +48,7 @@ log_data <- fread('../../results/multi_sublib/log.csv')
 # Coverage
 ggplot(data) +
   geom_bar(aes(x=sublibs, y=n_covered), stat='identity') +
+  geom_text(aes(x=sublibs, y=n_covered, label=n_covered), family = "Avenir", vjust=-0.25) +
   geom_hline(yintercept=131, color='darkgreen', linetype=2, lwd=1) +
   labs(x='Number of sublibraries',
        y='Number of target sequences covered') +
@@ -55,6 +56,25 @@ ggplot(data) +
 
 ggsave('Fig_3_SI_1.png', plot = last_plot(), device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
+       dpi = 300)
+
+ggplot(data) +
+  geom_bar(aes(x=sublibs, y=n_covered), stat='identity', fill=c('#66C2A5', '#FC8D62', '#8DA0CB', '#E78AC3', '#A6D854', '#FFD92F')) +
+  geom_hline(yintercept=131, color='black', linetype=2, lwd=0.5) +
+  labs(x='Sublibraries',
+       y='Targets covered') +
+  presentation +
+  theme(panel.border = element_blank(),
+        # axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line( size=.5, color='darkgray'),
+        # panel.grid.minor.y = element_line( size=.5, color='gray'),
+        panel.grid.minor.y = element_blank(),
+        axis.ticks.y = element_blank())
+
+ggsave('Fig_3_SI_1.svg', plot = last_plot(),
+       scale = 1, width = 45, height = 25, units = 'mm',
        dpi = 300)
 
 # Total library size

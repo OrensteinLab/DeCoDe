@@ -49,10 +49,12 @@ plot1 <- ggplot(data %>% filter(sublibs == '1 sublibrary')) +
                             '10000000' = parse(text = TeX('$10^7$')),
                             '100000000' = parse(text = TeX('$10^8$')),
                             '1000000000' = parse(text = TeX('$10^9$')))) +
+  geom_text(aes(x=as.factor(lib_limit), y=n_covered, label=n_covered), family = "Avenir", position=position_dodge2(width=0.9), size=3, vjust=-0.25) +
+  ylim(0, 50) +
   facet_grid(sublibs~.) +
   labs(x='Total library size limit',
        y='Targets covered',
-       fill='Algorithm:') +
+       fill='Method:') +
   presentation + 
   theme(panel.grid.major.x = element_blank(),
         legend.position='top',
@@ -68,10 +70,12 @@ plot2 <- ggplot(data %>% filter(sublibs == '2 sublibraries')) +
                             '10000000' = parse(text = TeX('$10^7$')),
                             '100000000' = parse(text = TeX('$10^8$')),
                             '1000000000' = parse(text = TeX('$10^9$')))) +
+  geom_text(aes(x=as.factor(lib_limit), y=n_covered, label=n_covered), family = "Avenir", position=position_dodge2(width=0.9), size=3, vjust=-0.25) +
+  ylim(0, 70) +
   facet_grid(sublibs~.) +
   labs(x='Total library size limit',
        y='Targets covered',
-       fill='Algorithm:') +
+       fill='Method:') +
   presentation + 
   theme(panel.grid.major.x = element_blank(),
         legend.position='top',
@@ -113,7 +117,7 @@ ggplot(data) +
   facet_grid(sublibs~.) +
   labs(x='Total library size limit',
        y='Total library size',
-       fill='Algorithm:') +
+       fill='Method:') +
   presentation + 
   theme(panel.grid.major.x = element_blank(),
         legend.position='top')
@@ -137,7 +141,7 @@ ggplot(data) +
   facet_grid(sublibs~.) +
   labs(x='Total library size limit',
        y='Runtime (s)',
-       fill='Algorithm:') +
+       fill='Method:') +
   presentation + 
   theme(panel.grid.major.x = element_blank(),
       legend.position='top')
@@ -158,8 +162,10 @@ ggplot(data) +
   facet_grid(sublibs~.) +
   labs(x='Total library size limit',
        y='Maximum memory usage (GB)',
-       fill='Algorithm:') +
-  presentation
+       fill='Method:') +
+  presentation + 
+  theme(panel.grid.major.x = element_blank(),
+        legend.position='top')
 
 ggsave('Fig_2_SI_3.png', plot = last_plot(), device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
