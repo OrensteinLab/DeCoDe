@@ -242,18 +242,35 @@ Here, we define all of the above entries in the JSON file:
 - `solve_time` - Total time for Gurobi to solve the design problem.
 - `total_time` - Total time = `construct_time` + `solve_time`.
 
+## Examples and results from the manuscript
+
+All of the protein sequences used in the examples shown in the mauscript are available in the `examples` subdirectory of this repository. Additionally, the JSON files output by DeCoDe and SwiftLib that serve as the raw input for the manuscript's figures can be found in the `results` subdirectory. Finally the `.R` and Jupyter notebook scripts used to generate the majority of the main text and SI figures can be found in the `figures` subdirectory. 
+
 ## Running library designs in parallel
 
 We can use [GNU `parallel`](https://www.gnu.org/software/parallel/) to design several libraries in parallel. These examples will generate all of the libraries for the demonstrations present in the manuscript.
 
+### Run DeCoDe on the 200 1xbi Resetta-designed sequences
+
 ```bash
-parallel --will-cite --lb -j 3 \
-    "/usr/bin/time -v --output results/multi_sublib/gfp_exclude_long_10000000_{1}.time \
-    python decode.py --limit 10000000 --sublib {1} --bins 100 --time-limit 172800 \
-    --threads 12 examples/gfp/gfp_exclude_long.aln \
-    results/multi_sublib/gfp_exclude_long_10000000_{1}.json | \
-    tee results/multi_sublib/gfp_exclude_long_10000000_{1}.log" ::: 1 2 3 4 8 12
+parallel --will-cite --lb \
+    "/usr/bin/time -v --output results/sl_comparison/ilp/1xbi_{1}_{2}.time \
+    python decode.py --limit {1} --sublib {2} --time-limit 172800 \
+    --threads 12 examples/rosetta/1xbi.aln results/sl_comparison/ilp/1xbi_{1}_{2}.json | \
+    tee results/sl_comparison/ilp/1xbi_{1}_{2}.log" \
+    ::: 320000000 ::: 1 2
 ```
+
+### Run SwiftLib on the 200 1xbi Resetta-designed sequences
+
+```bash
+parallel --will-cite --lb \
+    "/usr/bin/time -v --output results/sl_comparison/sl/1xbi_{1}_{2}.time \
+    python run_SwiftLib.py --limit {1} --sublib {2}" \
+    ::: 320000000 ::: 1 2
+```
+
+### Run DeCoDe on the 239 amino acid-long GFP subset
 
 ```bash
 parallel --will-cite --lb -j 3 \
@@ -264,9 +281,22 @@ parallel --will-cite --lb -j 3 \
     ::: 100000 1000000 10000000 100000000 1000000000 ::: 1 2
 ```
 
+### Run SwiftLib on the 239 amino acid-long GFP subset
+
 ```bash
 parallel --will-cite --lb \
     "/usr/bin/time -v --output results/sl_comparison/sl/gfp_239_{1}_{2}.time \
     python run_SwiftLib.py --limit {1} --sublib {2}" \
     ::: 100000 1000000 10000000 100000000 1000000000 ::: 1 2
+```
+
+### Run DeCoDe on the full GFP with 10^7 library size limit
+
+```bash
+parallel --will-cite --lb -j 3 \
+    "/usr/bin/time -v --output results/multi_sublib/gfp_exclude_long_10000000_{1}.time \
+    python decode.py --limit 10000000 --sublib {1} --bins 100 --time-limit 172800 \
+    --threads 12 examples/gfp/gfp_exclude_long.aln \
+    results/multi_sublib/gfp_exclude_long_10000000_{1}.json | \
+    tee results/multi_sublib/gfp_exclude_long_10000000_{1}.log" ::: 1 2 3 4 8 12
 ```
