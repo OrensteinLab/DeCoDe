@@ -28,7 +28,8 @@ presentation <- theme_bw() +
         strip.text = element_text(family = "Avenir",
                                   # face = "bold",
                                   size = text_size),
-        strip.text.x = element_text(vjust = 0))
+        strip.text.x = element_text(vjust = 0),
+        panel.grid.major.x = element_blank())
 
 setwd('~/decode')
 gfp_data <- fread('results/sl_comparison/kmers.csv') %>% 
@@ -63,12 +64,27 @@ rosetta_data <- fread('results/sl_comparison/kmers.csv') %>%
   
 rosetta_data_melt <- rosetta_data %>% 
   select(lib_limit, sublibs, k, SLiT_frac, DCiT_frac) %>% 
-  gather('fraction', 'value', SLiT_frac, DCiT_frac)
+  gather('fraction', 'value', SLiT_frac, DCiT_frac) %>% 
+  mutate(fraction = as.factor(fraction))
+
+levels(rosetta_data_melt$fraction) <- c('DeCoDe', 'SwiftLib')
 
 ggplot(rosetta_data_melt, aes(x=as.factor(k), y = value, fill=fraction)) +
   geom_bar(stat='identity', position='dodge') +
+  geom_text(aes(x=as.factor(k), y=0.5, label=round(value, 3)),
+            family = "Avenir", size=2, angle=90, position=position_dodge2(width=0.9),
+            hjust=0.5, color='white') +
   scale_fill_brewer(palette = "Set1") +
   ylim(0, 1) + 
-  presentation
+  labs(x='k-mer size',
+       y='Fraction of target\nk-mers covered',
+       fill='Method:') + 
+  presentation + 
+  theme(legend.position='bottom',
+        legend.margin=margin(t = 0, b = 0, unit='mm'))
 
+# Save the plot
+ggsave('1xbi_kmers.png', plot = last_plot(), device = 'png',
+       scale = 1, width = 86, height = 55, units = 'mm',
+       dpi = 350)
   

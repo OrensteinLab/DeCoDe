@@ -178,7 +178,7 @@ if __name__ == '__main__':
     kmers = [2, 3, 4]
     
     # Process 1xbi Rosetta experiment
-    rosetta_file = 'results/sl_comparison/ilp/1xbi_320000000_2.json'
+    rosetta_file = 'results/sl_comparison/ilp/1xbi_320000000_4.json'
 
     all_lines.extend(proc_rosetta_comp(rosetta_file, kmers))
     
