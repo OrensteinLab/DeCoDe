@@ -1,0 +1,5 @@
+biopython>=1.73
+Click>=7.0
+cvxpy>=1.0.24
+gurobipy>=8.1.1
+numpy>=1.16.4
