@@ -40,8 +40,76 @@ presentation <-  theme_bw() +
 # SI Figures #
 ##############
 
+rosetta_data <- fread('../results/sl_comparison/kmers.csv') %>% 
+  filter(task == '1xbi') %>% 
+  mutate(SLiT_frac = SLiT_all / target_kmers_all,
+         DCiT_frac = DCiT_all / target_kmers_all)
+
+rosetta_data_melt <- rosetta_data %>% 
+  select(lib_limit, sublibs, k, SLiT_frac, DCiT_frac) %>% 
+  gather('fraction', 'value', SLiT_frac, DCiT_frac) %>% 
+  mutate(fraction = as.factor(fraction))
+
+levels(rosetta_data_melt$fraction) <- c('DeCoDe', 'SwiftLib')
+
+fig_s1 <- ggplot(rosetta_data_melt, aes(x=as.factor(k), y = value, fill=fraction)) +
+  geom_bar(stat='identity', position='dodge') +
+  geom_text(aes(x=as.factor(k), y=0.5, label=round(value, 3)),
+            family = "Avenir", size=3, position=position_dodge2(width=0.9),
+            hjust=0.5, color='white') +
+  scale_fill_brewer(palette = "Set1") +
+  ylim(0, 1) + 
+  labs(x='k',
+       y="Fraction of total\ntarget k-mers covered",
+       fill='Method:') + 
+  presentation + 
+  theme(legend.position='bottom',
+        legend.margin=margin(t = 0, b = 0, unit='mm'),
+        legend.spacing.x = unit(1, 'lines'),
+        legend.text.align = 0.5)
+
+ggsave('figures/figure_s1.png', plot = fig_s1, device = 'png',
+       scale = 1, width = 125, height = 125, units = 'mm',
+       dpi = 350)
+
+# Get kmer data
+kmer_data <- fread('../results/sl_comparison/kmers.csv') %>% 
+  filter(task == 'gfp') %>% 
+  mutate(SwiftLib = SLiT_all / target_kmers_all,
+         DeCoDe = DCiT_all / target_kmers_all,
+         sublibs = as.factor(sublibs),
+         lib_limit = as.factor(lib_limit),
+         k = as.factor(k)) %>% 
+  select(lib_limit, sublibs, k, SwiftLib, DeCoDe) %>% 
+  gather('method', 'fraction', SwiftLib, DeCoDe)
+
+levels(kmer_data$sublibs) <- c('1 sublibrary', '2 sublibraries')
+levels(kmer_data$k) <- c('k=2', 'k=3', 'k=4')
+
+fig_s2 <- ggplot(kmer_data, aes(x=lib_limit, y = fraction, fill=method)) +
+  geom_bar(stat='identity', position='dodge') +
+  scale_fill_brewer(palette = 'Set1') +
+  scale_x_discrete(labels=c('100000' = parse(text = TeX('$10^5$')),
+                            '1000000' = parse(text = TeX('$10^6$')),
+                            '10000000' = parse(text = TeX('$10^7$')),
+                            '100000000' = parse(text = TeX('$10^8$')),
+                            '1000000000' = parse(text = TeX('$10^9$')))) +
+  facet_grid(sublibs~k) +
+  labs(x='Total library size limit',
+       y='Fraction of total\ntarget k-mers covered',
+       fill='Method:') +
+  ylim(0, 1) +
+  presentation +
+  theme(axis.text.x = element_text(family = "Avenir",
+                                   size = 6))
+
+ggsave('figures/figure_s2.png', plot = fig_s2, device = 'png',
+       scale = 1, width = 125, height = 125, units = 'mm',
+       dpi = 350)
+
+
 ###############
-# 1 through 3 #
+# 3 through 6 #
 ###############
 
 # Read in the data
@@ -52,7 +120,7 @@ data$sublibs <- factor(data$sublibs)
 
 levels(data$sublibs) <- c('1 sublibrary', '2 sublibraries')
 
-fig_s1 <- ggplot(data) +
+fig_s3 <- ggplot(data) +
   geom_bar(aes(x=as.factor(lib_limit), y=total_lib_size, fill=method), position='dodge', stat='identity') +
   scale_fill_brewer(palette = "Set1") +
   scale_x_discrete(labels=c('100000' = parse(text = TeX('$10^5$')),
@@ -70,12 +138,12 @@ fig_s1 <- ggplot(data) +
   theme(panel.grid.major.x = element_blank(),
         legend.position='top')
 
-ggsave('figures/figure_s1.png', plot = fig_s1, device = 'png',
+ggsave('figures/figure_s3.png', plot = fig_s3, device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
        dpi = 350)
 
 # Runtime
-fig_s2 <- ggplot(data) +
+fig_s4 <- ggplot(data) +
   geom_bar(aes(x=as.factor(lib_limit), y=time, fill=method), position='dodge', stat='identity') +
   scale_fill_brewer(palette = "Set1") +
   scale_x_discrete(labels=c('100000' = parse(text = TeX('$10^5$')),
@@ -94,12 +162,12 @@ fig_s2 <- ggplot(data) +
   theme(panel.grid.major.x = element_blank(),
         legend.position='top')
 
-ggsave('figures/figure_s2.png', plot = fig_s2, device = 'png',
+ggsave('figures/figure_s4.png', plot = fig_s4, device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
        dpi = 350)
 
 # Memory usage
-fig_s3 <- ggplot(data) +
+fig_s5 <- ggplot(data) +
   geom_bar(aes(x=as.factor(lib_limit), y=max_mem / 1000000, fill=method), position='dodge', stat='identity') +
   scale_fill_brewer(palette = "Set1") +
   scale_x_discrete(labels=c('100000' = parse(text = TeX('$10^5$')),
@@ -115,13 +183,13 @@ fig_s3 <- ggplot(data) +
   theme(panel.grid.major.x = element_blank(),
         legend.position='top')
 
-ggsave('figures/figure_s3.png', plot = fig_s3, device = 'png',
+ggsave('figures/figure_s5.png', plot = fig_s5, device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
        dpi = 350)
 
-###############
-# 5 through 9 #
-###############
+################
+# 7 through 11 #
+################
 
 data <- fread('../results/multi_sublib/results.csv')
 
@@ -132,7 +200,7 @@ data$sublibs <- factor(data$sublibs)
 log_data <- fread('../results/multi_sublib/log.csv')
 
 # Coverage
-fig_s5 <- ggplot(data) +
+fig_s7 <- ggplot(data) +
   geom_bar(aes(x=sublibs, y=n_covered), stat='identity') +
   geom_text(aes(x=sublibs, y=n_covered, label=n_covered), family = "Avenir", vjust=-0.25) +
   geom_hline(yintercept=131, color='darkgreen', linetype=2, lwd=1) +
@@ -140,12 +208,12 @@ fig_s5 <- ggplot(data) +
        y='Number of target sequences covered') +
   presentation
 
-ggsave('figures/figure_s5.png', plot = fig_s5, device = 'png',
+ggsave('figures/figure_s7.png', plot = fig_s7, device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
        dpi = 350)
 
 # Total library size
-fig_s6 <- ggplot(data) +
+fig_s8 <- ggplot(data) +
   geom_bar(aes(x=sublibs, y=total_lib_size), stat='identity') +
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                 labels = trans_format("log10", math_format(10^.x))) +
@@ -154,12 +222,12 @@ fig_s6 <- ggplot(data) +
        y='Total library size') +
   presentation
 
-ggsave('figures/figure_s6.png', plot = fig_s6, device = 'png',
+ggsave('figures/figure_s8.png', plot = fig_s8, device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
        dpi = 350)
 
 # Runtime
-fig_s7 <- ggplot(data) +
+fig_s9 <- ggplot(data) +
   geom_bar(aes(x=sublibs, y=time), stat='identity') +
   scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                 labels = trans_format("log10", math_format(10^.x))) +
@@ -168,18 +236,18 @@ fig_s7 <- ggplot(data) +
        y='Runtime (s)') +
   presentation
 
-ggsave('figures/figure_s7.png', plot = fig_s7, device = 'png',
+ggsave('figures/figure_s9.png', plot = fig_s9, device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
        dpi = 350)
 
 # Maximum memory usage
-fig_s8 <- ggplot(data) +
+fig_s10 <- ggplot(data) +
   geom_bar(aes(x=sublibs, y=max_mem / 1000000), stat='identity') +
   labs(x='Number of sublibraries',
        y='Maximum memory usage (GB)') +
   presentation
 
-ggsave('figures/figure_s8.png', plot = fig_s8, device = 'png',
+ggsave('figures/figure_s10.png', plot = fig_s10, device = 'png',
        scale = 1, width = 125, height = 125, units = 'mm',
        dpi = 350)
 
@@ -189,7 +257,7 @@ log_data_reformed <- log_data %>%
   group_by(sublibs, time) %>% 
   gather('var', 'val', solution, bound)
 
-fig_s9 <- ggplot(log_data_reformed) +
+fig_s11 <- ggplot(log_data_reformed) +
   geom_line(aes(x=time / 60, y=val, color=var)) +
   facet_wrap(.~sublibs, nrow=2, scales='free_x') +
   scale_color_brewer(palette = "Set1") +
@@ -199,6 +267,6 @@ fig_s9 <- ggplot(log_data_reformed) +
   presentation +
   theme(axis.text.x = element_text(angle = -90, hjust=0, vjust=0.5))
 
-ggsave('figures/figure_s9.png', plot = fig_s9, device = 'png',
+ggsave('figures/figure_s11.png', plot = fig_s11, device = 'png',
        scale = 1, width = 160, height = 100, units = 'mm',
        dpi = 350)
