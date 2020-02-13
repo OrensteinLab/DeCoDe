@@ -5,6 +5,10 @@ library('data.table')
 library('latex2exp')
 library('scales')
 library('cowplot')
+library('showtext')
+
+# Add Avenir font, comment out if the font file is not on the machine
+font_add("Avenir", "Avenir.ttc")
 
 # Set working directory
 setwd('~/decode/figures/')

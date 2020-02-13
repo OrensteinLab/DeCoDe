@@ -6,6 +6,10 @@ library('latex2exp')
 library('scales')
 library('cowplot')
 library('RColorBrewer')
+library('showtext')
+
+# Add Avenir font, comment out if the font file is not on the machine
+font_add("Avenir", "Avenir.ttc")
 
 # Set working directory
 setwd('~/decode/figures/')
@@ -18,19 +22,19 @@ text_size = 8
 presentation <-  theme_bw() +
   theme(plot.title = element_text(hjust = 0.5,
                                   family = "Avenir",
-                                  face = "bold",
+                                  # face = "bold",
                                   size = text_size),
         axis.title = element_text(family = "Avenir",
-                                  face = "bold",
+                                  # face = "bold",
                                   size = text_size),
         axis.text = element_text(family = "Avenir",
                                  # face = "bold",
-                                 size = text_size),
+                                 size = text_size - 2),
         legend.text = element_text(family = "Avenir",
                                    # face = "bold",
                                    size = text_size),
         legend.title = element_text(family = "Avenir",
-                                    face = "bold",
+                                    # face = "bold",
                                     size = text_size),
         strip.text = element_text(family = "Avenir",
                                   # face = "bold",
@@ -39,8 +43,8 @@ presentation <-  theme_bw() +
 
 cowplot_config <- theme(legend.position='top',
                         plot.margin = margin(0.25, 0.25, 0.25, 0.25, "cm"),
-                        axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
-                        axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)))
+                        axis.title.y = element_text(margin = margin(t = 0, r = 6, b = 0, l = 0)),
+                        axis.title.x = element_text(margin = margin(t = 6, r = 0, b = 0, l = 0)))
 
 ############
 # Figure 2 #
@@ -62,7 +66,8 @@ panel_A <- ggplot(rosetta_target_data) +
   coord_flip() +
   presentation + 
   cowplot_config +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        panel.grid.major.y = element_blank())
 
 rosetta_data <- fread('../results/sl_comparison/kmers.csv') %>% 
   filter(task == '1xbi') %>% 
@@ -95,9 +100,10 @@ panel_B <- ggplot(rosetta_kmer_all, aes(x=SLiT_frac_all, y = DCiT_frac_all, colo
   geom_abline(slope = 1, intercept = 0, color = "red", linetype = 2) + 
   geom_point() +
   scale_color_brewer(palette = "Set2") +
-  labs(x="SwiftLib fraction\ntotal k-mers",
-       y="DeCoDe fraction\ntotal k-mers",
+  labs(x="SwiftLib",
+       y="DeCoDe",
        color = "k:") + 
+  ggtitle("Fraction of total\nk-mers covered") +
   scale_y_continuous(limits = c(0.895, 1), breaks=seq(0.9, 1, by = .05)) +
   scale_x_continuous(limits = c(0.895, 1), breaks=seq(0.9, 1, by = .05)) +
   presentation + 
@@ -110,9 +116,10 @@ panel_C <- ggplot(rosetta_kmer_unique, aes(x=SLiT_frac_unique, y = DCiT_frac_uni
   geom_abline(slope = 1, intercept = 0, color = "red", linetype = 2) + 
   geom_point() +
   scale_color_brewer(palette = "Set2") +
-  labs(x="SwiftLib fraction\nunique k-mers",
-       y="DeCoDe fraction\nunique k-mers",
+  labs(x="SwiftLib",
+       y="DeCoDe",
        color = "k:") +
+  ggtitle("Fraction of unique\nk-mers covered") +
   scale_y_continuous(limits = c(0.895, 1), breaks=seq(0.9, 1, by = .05)) +
   scale_x_continuous(limits = c(0.895, 1), breaks=seq(0.9, 1, by = .05)) +
   presentation + 
@@ -126,17 +133,17 @@ panel_C <- ggplot(rosetta_kmer_unique, aes(x=SLiT_frac_unique, y = DCiT_frac_uni
 
 # Assemble grid
 subgrid_A <- plot_grid(panel_A,
-                       labels = c("A"),
+                       labels = c(""),
                        scale=0.9)
 
 subgrid_BC <- plot_grid(panel_B,
                      panel_C + theme(legend.position="none"),
                      ncol = 2,
-                     scale = 0.9,
+                     scale = 1,
                      labels = c("B", "C"),
                      label_fontfamily = "Avenir",
                      hjust = 0,
-                     vjust = 1)
+                     vjust = 1.6)
 
 legend <- get_legend(
     panel_C +
@@ -148,7 +155,7 @@ legend <- get_legend(
 grid <- plot_grid(subgrid_A,
                   subgrid_BC,
                   legend,
-                  labels = c("", "", ""),
+                  labels = c("A", "", ""),
                   nrow = 3,
                   rel_heights = c(1, 1.5, 0.1),
                   scale = 1,
@@ -230,8 +237,8 @@ panel_A <- ggplot(data %>% filter(sublibs == '1 sublibrary')) +
        fill='Method:') +
   presentation + 
   cowplot_config +
-  theme(axis.text.x = element_text(family = "Avenir",
-                                   size = 6))
+  theme(axis.text.x = element_text(family = "Avenir", size = 6),
+        panel.grid.major.x = element_blank())
 
 # Plot panel B
 panel_B <- ggplot(data %>% filter(sublibs == '2 sublibraries')) +
@@ -251,8 +258,8 @@ panel_B <- ggplot(data %>% filter(sublibs == '2 sublibraries')) +
        fill='Method:') +
   presentation + 
   cowplot_config +
-  theme(axis.text.x = element_text(family = "Avenir",
-                                   size = 6))
+  theme(axis.text.x = element_text(family = "Avenir", size = 6),
+        panel.grid.major.x = element_blank())
 
 # Get kmer data
 kmer_data <- fread('../results/sl_comparison/kmers.csv') %>% 
@@ -289,11 +296,15 @@ panel_C <- ggplot(kmer_data, aes(x=SwiftLib_all, y = DeCoDe_all, color = lib_lim
   geom_point() +
   scale_color_brewer(palette = 'Set2') +
   facet_grid(.~k) +
-  labs(x='SwiftLib fraction total k-mers',
-       y='DeCoDe fraction\ntotal k-mers',
+  labs(x='SwiftLib',
+       y='DeCoDe',
        color='Library size limit:') +
+  ggtitle("Fraction of total k-mers covered") +
   presentation +
   cowplot_config +
+  coord_fixed(xlim = c(0.75, 1), ylim = c(0.75, 1)) +
+  scale_x_continuous(breaks = seq(.7, 1, .1)) +
+  scale_y_continuous(breaks = seq(.7, 1, .1)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 panel_D <- ggplot(kmer_data, aes(x=SwiftLib_unique, y = DeCoDe_unique, color = lib_limit, shape = sublibs)) +
@@ -306,12 +317,14 @@ panel_D <- ggplot(kmer_data, aes(x=SwiftLib_unique, y = DeCoDe_unique, color = l
                               '100000000' = parse(text = TeX('$10^8$')),
                               '1000000000' = parse(text = TeX('$10^9$')))) +
   facet_grid(.~k) +
-  labs(x='SwiftLib fraction unique k-mers',
-       y='DeCoDe fraction\nunique k-mers',
+  labs(x='SwiftLib',
+       y='DeCoDe',
        color='Library size limit:',
        shape="Sublibrary count: ") +
+  ggtitle("Fraction of unique k-mers covered") +
   presentation +
   cowplot_config +
+  coord_fixed(xlim = c(0.2, 0.55), ylim = c(0.2, 0.55)) +
   theme(legend.box = "vertical",
         axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
@@ -341,8 +354,8 @@ grid <- plot_grid(panel_A + theme(legend.position="none"),
                   legend2,
                   labels = c("A", "C", "B", "D", "", ""),
                   ncol = 2,
-                  scale = 0.9,
-                  rel_widths = c(2, 3),
+                  scale = 0.95,
+                  rel_widths = c(1, 1),
                   rel_heights = c(1, 1, .3),
                   label_fontfamily = "Avenir",
                   hjust = 0,
