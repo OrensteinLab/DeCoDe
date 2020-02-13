@@ -110,7 +110,7 @@ panel_B <- ggplot(rosetta_kmer_all, aes(x=SLiT_frac_all, y = DCiT_frac_all, colo
   cowplot_config +
   coord_fixed() +
   theme(legend.position='none',
-        axis.text.x = element_text(angle = 90, vjust = 0.5))
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 panel_C <- ggplot(rosetta_kmer_unique, aes(x=SLiT_frac_unique, y = DCiT_frac_unique, color=as.factor(k))) +
   geom_abline(slope = 1, intercept = 0, color = "red", linetype = 2) + 
@@ -128,7 +128,7 @@ panel_C <- ggplot(rosetta_kmer_unique, aes(x=SLiT_frac_unique, y = DCiT_frac_uni
   theme(legend.position='bottom',
         legend.margin=margin(t = 0, b = 0, unit='mm'),
         legend.text.align = 0.5,
-        axis.text.x = element_text(angle = 90, vjust = 0.5))
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 
 # Assemble grid
@@ -168,44 +168,6 @@ ggsave('figures/figure_2.png', plot = grid, device = 'png',
        scale = 1, width = 86, height = 75, units = 'mm',
        dpi = 350)
 
-###########
-
-
-levels(rosetta_data_melt$fraction) <- c('DeCoDe', 'SwiftLib')
-
-ylab <- expression(bold(paste("Fraction of target\n", bold(italic("k")), "-mers covered")))
-
-panel_B <- ggplot(rosetta_data_melt, aes(x=as.factor(k), y = value, fill=fraction)) +
-  geom_bar(stat='identity', position='dodge') +
-  geom_text(aes(x=as.factor(k), y=0.5, label=round(value, 3)),
-            family = "Avenir", size=2, angle=90, position=position_dodge2(width=0.9),
-            hjust=0.5, color='white') +
-  scale_fill_brewer(palette = "Set1") +
-  ylim(0, 1) + 
-  labs(x='k',
-       y="Fraction of unique\ntarget k-mers covered",
-       fill='Method:') + 
-  presentation + 
-  theme(legend.position='bottom',
-        legend.margin=margin(t = 0, b = 0, unit='mm'),
-        legend.spacing.x = unit(1, 'lines'),
-        legend.text.align = 0.5)
-
-# Assemble grid
-grid <- plot_grid(panel_A,
-                  panel_B,
-                  labels = "AUTO",
-                  nrow = 2,
-                  rel_heights = c(2, 3),
-                  scale = .95,
-                  label_fontfamily = "Avenir",
-                  hjust = 0,
-                  vjust = 1)
-
-# Save the plot
-ggsave('figures/figure_2.png', plot = grid, device = 'png',
-       scale = 1, width = 86, height = 90, units = 'mm',
-       dpi = 350)
 
 ############
 # Figure 3 #
@@ -264,22 +226,6 @@ panel_B <- ggplot(data %>% filter(sublibs == '2 sublibraries')) +
 # Get kmer data
 kmer_data <- fread('../results/sl_comparison/kmers.csv') %>% 
   filter(task == 'gfp') %>% 
-  mutate(SwiftLib = SLiT / target_kmers,
-         DeCoDe = DCiT / target_kmers,
-         sublibs = as.factor(sublibs),
-         lib_limit = as.factor(lib_limit),
-         k = as.factor(k)) %>% 
-  select(lib_limit, sublibs, k, SwiftLib, DeCoDe) %>% 
-  gather('method', 'fraction', SwiftLib, DeCoDe)
-
-levels(kmer_data$sublibs) <- c('1 sublibrary', '2 sublibraries')
-levels(kmer_data$k) <- c('k=2', 'k=3', 'k=4')
-
-
-###### Scatter
-
-kmer_data <- fread('../results/sl_comparison/kmers.csv') %>% 
-  filter(task == 'gfp') %>% 
   mutate(SwiftLib_unique = SLiT / target_kmers,
          DeCoDe_unique = DCiT / target_kmers,
          SwiftLib_all = SLiT_all / target_kmers_all,
@@ -289,6 +235,7 @@ kmer_data <- fread('../results/sl_comparison/kmers.csv') %>%
          k = as.factor(k)) %>% 
   select(lib_limit, sublibs, k, SwiftLib_unique, DeCoDe_unique, SwiftLib_all, DeCoDe_all)
 
+levels(kmer_data$sublibs) <- c('1 sublibrary', '2 sublibraries')
 levels(kmer_data$k) <- c('k=2', 'k=3', 'k=4')
 
 panel_C <- ggplot(kmer_data, aes(x=SwiftLib_all, y = DeCoDe_all, color = lib_limit, shape = sublibs)) +
@@ -357,82 +304,6 @@ grid <- plot_grid(panel_A + theme(legend.position="none"),
                   scale = 0.95,
                   rel_widths = c(1, 1),
                   rel_heights = c(1, 1, .3),
-                  label_fontfamily = "Avenir",
-                  hjust = 0,
-                  vjust = 1)
-
-# Save the plot
-ggsave('figures/figure_3.png', plot = grid, device = 'png',
-       scale = 1, width = 178, height = 100, units = 'mm',
-       dpi = 350)
-###################
-
-# Plot panel C
-kmer_1sublib <- kmer_data %>% 
-  filter(sublibs == '1 sublibrary')
-
-panel_B <- ggplot(kmer_1sublib, aes(x=lib_limit, y = fraction, fill=method)) +
-  geom_bar(stat='identity', position='dodge') +
-  scale_fill_brewer(palette = 'Set1') +
-  scale_x_discrete(labels=c('100000' = parse(text = TeX('$10^5$')),
-                            '1000000' = parse(text = TeX('$10^6$')),
-                            '10000000' = parse(text = TeX('$10^7$')),
-                            '100000000' = parse(text = TeX('$10^8$')),
-                            '1000000000' = parse(text = TeX('$10^9$')))) +
-  facet_grid(sublibs~k) +
-  labs(x='Total library size limit',
-       y='Fraction of unique\ntarget k-mers covered',
-       fill='Method:') +
-  # ylim(0, 0.6) + 
-  presentation +
-  cowplot_config +
-  theme(axis.text.x = element_text(family = "Avenir",
-        size = 6))
-
-# Plot panel D
-kmer_2sublib <- kmer_data %>% 
-  filter(sublibs == '2 sublibraries')
-
-panel_D <- ggplot(kmer_2sublib, aes(x=lib_limit, y = fraction, fill=method)) +
-  geom_bar(stat='identity', position='dodge') +
-  scale_fill_brewer(palette = 'Set1') +
-  scale_x_discrete(labels=c('100000' = parse(text = TeX('$10^5$')),
-                            '1000000' = parse(text = TeX('$10^6$')),
-                            '10000000' = parse(text = TeX('$10^7$')),
-                            '100000000' = parse(text = TeX('$10^8$')),
-                            '1000000000' = parse(text = TeX('$10^9$')))) +
-  facet_grid(sublibs~k) +
-  labs(x='Total library size limit',
-       y='Fraction of unique\ntarget k-mers covered',
-       fill='Method:') +
-  # ylim(0, 0.6) + 
-  presentation +
-  cowplot_config +
-  theme(axis.text.x = element_text(family = "Avenir",
-                                 size = 6))
-
-legend <- get_legend(
-  panel_A +
-    theme(legend.key.width=unit(0.5, 'cm'),
-          legend.text.align=0.5,
-          legend.spacing.x = unit(0.5, 'cm'))
-)
-
-# Plot the grid
-grid <- plot_grid(panel_A + theme(legend.position="none"),
-                  panel_B + theme(legend.position="none"),
-                  panel_C + theme(legend.position="none"),
-                  panel_D + theme(legend.position="none"),
-                  labels = "AUTO",
-                  ncol = 2,
-                  rel_widths = c(2, 3),
-                  label_fontfamily = "Avenir",
-                  hjust = 0,
-                  vjust = 1)
-
-grid <- plot_grid(grid, legend,
-                  ncol = 1,
-                  rel_heights = c(3, 0.15),
                   label_fontfamily = "Avenir",
                   hjust = 0,
                   vjust = 1)
